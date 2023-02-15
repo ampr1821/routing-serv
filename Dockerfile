@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY requirements.txt /app
 
-RUN python -m venv venv/ && source venv/bin/activate
+RUN python -m venv venv/ && venv/bin/activate
 
 RUN pip install -r requirements.txt
 
