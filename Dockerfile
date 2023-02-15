@@ -6,9 +6,9 @@ WORKDIR /app
 
 COPY requirements.txt /app
 
-RUN python -m venv venv/ && venv/bin/activate
+RUN python3 -m venv venv/
 
-RUN pip install -r requirements.txt
+RUN venv/bin/pip install -r requirements.txt
 
 FROM node:latest
 
