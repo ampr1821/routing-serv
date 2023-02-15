@@ -15,7 +15,7 @@ app.get('/',function(req,res) {
 	console.log('request received');
 	console.log(req.query)
 	
-	const pythonProcess = spawn('venv/Scripts/python.exe',["./get_route.py", arg1, arg2, arg3, arg4]);
+	const pythonProcess = spawn('venv/bin/python',["./get_route.py", arg1, arg2, arg3, arg4]);
 	pythonProcess.stderr.on("data", data => {
     	console.log(`stderr: ${data}`);
     	res.send('Some error occurred');
