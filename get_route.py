@@ -45,6 +45,7 @@ if __name__ == "__main__":
       lat = graph.nodes[i]['y'] #lat
       print(str(lat) + "," + str(lon))
 
+    sys.stdout.flush()
 # command to run (Windows)
 # python get_route.py 12.9246572 77.5582014 13.0110216 77.6747875
 
