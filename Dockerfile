@@ -8,4 +8,4 @@ COPY package.json /app/
 
 RUN npm install .
 
-ENTRYPOINT["node", "index.js"]
+ENTRYPOINT ["node", "index.js"]
