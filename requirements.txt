@@ -1,3 +1,5 @@
+numpy
+GDAL
 geopy
 networkx
 osmnx
