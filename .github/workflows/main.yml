@@ -24,10 +24,11 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          platforms: |
+	  tags: ${{ secrets.DOCKERHUB_USERNAME }}/routing-server:latest
+	  platforms: |
             linux/amd64
 	    linux/arm64
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/routing-server:latest
+
   docker-arm64:
     runs-on: self-hosted
     steps:
