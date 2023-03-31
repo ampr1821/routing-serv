@@ -1,27 +1,30 @@
 import osmnx as ox
 import networkx as nx
 import sys
-from geopy.distance import geodesic
+from astar import AStar
+from haversine import haversine
 
-def a_star(point1, point2, distance_func):
+class a_star(AStar):
+    def __init__(self,graph):
+        self.graph = graph
 
-    # get the nearest nodes to the start and end points
-    start_node = ox.distance.nearest_nodes(graph, point1[1], point1[0])
-    end_node = ox.distance.nearest_nodes(graph, point2[1], point2[0])
-
-    # run A* algorithm to find the shortest path
-    path = nx.astar_path(graph, start_node, end_node, heuristic=distance_func, weight='length')
-
-    # calculate the total distance of the path
-    # total_distance = sum(graph[u][v]['length'] for u, v in zip(path[:-1], path[1:]))
-
-    return path, 0
-
-# define the distance function to use as the heuristic
-def distance_func(u, v):
-    point1 = (graph.nodes[u]['y'], graph.nodes[u]['x'])
-    point2 = (graph.nodes[v]['y'], graph.nodes[v]['x'])
-    return geodesic(point1, point2).meters
+    def heuristic_cost_estimate(self, n1, n2) -> float:
+        if isinstance(n1, int):
+            n1 = self.graph.nodes[n1]['x'], self.graph.nodes[n1]['y']
+        if isinstance(n2, int):
+            n2 = self.graph.nodes[n2]['x'], self.graph.nodes[n2]['y']
+        x1, y1 = n1
+        x2, y2 = n2
+        return haversine((y1, x1), (y2, x2))
+    
+    def distance_between(self, n1, n2):
+        if 'length' in self.graph[n1][n2]:
+            return self.graph[n1][n2]['length']
+        else:
+            return 99999999 # return a large number if 'length' attribute is not present
+    
+    def neighbors(self, node):
+        return list(self.graph.neighbors(node))
 
 if __name__ == "__main__":
     
@@ -34,16 +37,19 @@ if __name__ == "__main__":
     point2 = (float(sys.argv[3]), float(sys.argv[4]))
 
     # create the graph
-    graph = ox.graph_from_point(point1, dist=15000, network_type='drive')
-    path, total_distance = a_star(point1, point2, distance_func)
-    # ox.plot.plot_graph_route(graph, path, "green")
-    # print(f'The shortest path is: {path}')
-    # print(f'Total distance: {total_distance:.2f} meters')
+    # 12.903203, 77.648572 12.912441, 77.632885
+    G = ox.graph_from_place("HSR, Bengaluru, India", network_type='drive')
+    start_node = ox.distance.nearest_nodes(G, point1[1], point1[0])
+    goal_node = ox.distance.nearest_nodes(G, point2[1], point2[0])
+    astar = a_star(G)
+    path = astar.astar(start_node, goal_node)
+    path = list(path)
 
-    for i in path:
-      lon = graph.nodes[i]['x'] #lon
-      lat = graph.nodes[i]['y'] #lat
-      print(str(lat) + "," + str(lon))
+    # for i in path:
+    #   lon = path[i][1] #lon
+    #   lat = path[i][0] #lat
+    #   print(str(lat) + "," + str(lon))
+    print(path)
 
     sys.stdout.flush()
 # command to run (Windows)
