@@ -2,3 +2,5 @@ geopy
 networkx
 osmnx
 scikit-learn
+astar
+haversine
