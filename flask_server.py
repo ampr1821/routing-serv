@@ -16,10 +16,10 @@ def test_connection():
 @app.route("/getroute")
 def retRoute():
     args = request.args
-    lat1 = args.get('lat1', None)
-    lat2 = args.get('lat2', None)
-    lon1 = args.get('lon1', None)
-    lon2 = args.get('lon2', None)
+    lat1 = parseDouble(args.get('lat1', None))
+    lat2 = parseDouble(args.get('lat2', None))
+    lon1 = parseDouble(args.get('lon1', None))
+    lon2 = parseDouble(args.get('lon2', None))
 
     if lat1 != None:
         start_node = ox.distance.nearest_nodes(G, lat1, lon1)
