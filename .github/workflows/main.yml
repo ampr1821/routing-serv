@@ -19,11 +19,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - uses: actions/checkout@v3
-      -
-        name: Build and push
+      - name: Build and push
         uses: docker/build-push-action@v3
         with:
           push: true
           platforms: |
             linux/amd64
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/routing-server:v1.1
+
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          port: 22
+          script: docker stop server && docker pull am271/routing-server:v1.1 && docker run -dt --rm --name server -p 5566:5566 am271/routing-server:v1.1
