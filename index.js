@@ -30,6 +30,8 @@ app.get('/getroute', function(req, res) {
  		// Do something with the data returned from python script
 		console.log('Request complete');
 		route_data = String(data).split('\n');
+		if (route_data.at(-1) == '')
+			route_data.pop(-1) // popping out the last character
 		route_ = []
 		route_data.forEach(element => {
 			route_.push(element.split(','))
