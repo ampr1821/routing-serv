@@ -8,9 +8,6 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-# Load the graph
-G = ox.graph_from_place("HSR, Bengaluru, India", network_type='drive')
-
 @app.route("/")
 @cross_origin()
 def test_connection():
@@ -27,6 +24,9 @@ def retRoute():
     print('Request received!')
 
     if lat1 != None:
+
+        # Load the graph
+        G = ox.graph_from_place("HSR, Bengaluru, India", network_type='drive')
         start_node = ox.distance.nearest_nodes(G, lat1, lon1)
         goal_node = ox.distance.nearest_nodes(G, lat2, lon2)
 
