@@ -4,3 +4,5 @@ osmnx
 scikit-learn
 astar
 haversine
+Flask
+waitress
