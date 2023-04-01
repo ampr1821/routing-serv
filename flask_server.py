@@ -9,9 +9,6 @@ app = Flask(__name__)
 G = ox.graph_from_place("HSR, Bengaluru, India", network_type='drive')
 astar = a_star(G)
 
-print("Serving the app")
-serve(app, host='0.0.0.0', port=5566)
-
 @app.route("/")
 def test_connection():
     return "Yes, we are open!"
@@ -40,3 +37,6 @@ def retRoute():
         return returnList
     else:
         return "Error! Two Lat Long pairs!"
+
+print("Serving the app")
+serve(app, host='0.0.0.0', port=5566)
