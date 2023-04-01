@@ -25,7 +25,12 @@ app.get('/',function(req,res) {
 	pythonProcess.stdout.on('data', (data) => {
  		// Do something with the data returned from python script
 		console.log('Request complete');
- 		res.send(data);
+		route_data = data.split('\n');
+		route_ = []
+		route_data.forEach(element => {
+			route_.push(element.split(','))
+		});
+ 		res.send(route_);
 	});
 });
 
