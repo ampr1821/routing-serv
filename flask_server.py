@@ -7,7 +7,6 @@ app = Flask(__name__)
 
 # Load the graph
 G = ox.graph_from_place("HSR, Bengaluru, India", network_type='drive')
-astar = a_star(G)
 
 @app.route("/")
 def test_connection():
@@ -25,6 +24,9 @@ def retRoute():
     if lat1 != None:
         start_node = ox.distance.nearest_nodes(G, lat1, lon1)
         goal_node = ox.distance.nearest_nodes(G, lat2, lon2)
+
+        astar = a_star(G)
+
         path = astar.astar(start_node, goal_node)
         path = list(path)
         returnList = []
