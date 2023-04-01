@@ -6,3 +6,4 @@ astar
 haversine
 Flask
 waitress
+flask-cors

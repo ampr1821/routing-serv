@@ -1,18 +1,23 @@
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 import osmnx as ox
 from waitress import serve
 from astar_routing import *
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Load the graph
 G = ox.graph_from_place("HSR, Bengaluru, India", network_type='drive')
 
 @app.route("/")
+@cross_origin()
 def test_connection():
     return "Yes, we are open!"
 
 @app.route("/getroute")
+@cross_origin()
 def retRoute():
     args = request.args
     lat1 = float(args.get('lat1', None))
