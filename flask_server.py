@@ -31,7 +31,7 @@ def retRoute():
         for i in path:
             lon = G._node[i]['x'] #lon
             lat = G._node[i]['y'] #lat
-            returnList.append([lat, lon])
+            returnList.append({'lat' : lat, 'lon' : lon})
             # print(str(lat) + "," + str(lon))
         
         return returnList
