@@ -7,7 +7,11 @@ app.listen(port,function() {
 	console.log('listening on port '+port);
 });
 
-app.get('/',function(req,res) {
+app.get('/', (req, res) => {
+	res.send('OK');
+});
+
+app.get('/getroute', function(req, res) {
 	arg1 = req.query.lat1;
 	arg2 = req.query.lon1;
 	arg3 = req.query.lat2;
@@ -25,7 +29,7 @@ app.get('/',function(req,res) {
 	pythonProcess.stdout.on('data', (data) => {
  		// Do something with the data returned from python script
 		console.log('Request complete');
-		route_data = data.split('\n');
+		route_data = String(data).split('\n');
 		route_ = []
 		route_data.forEach(element => {
 			route_.push(element.split(','))
