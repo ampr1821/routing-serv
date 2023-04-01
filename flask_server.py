@@ -26,7 +26,7 @@ def retRoute():
         start_node = ox.distance.nearest_nodes(G, lat1, lon1)
         goal_node = ox.distance.nearest_nodes(G, lat2, lon2)
         path = astar.astar(start_node, goal_node)
-        # path = list(path)
+        path = list(path)
         returnList = []
 
         print(len(path))
