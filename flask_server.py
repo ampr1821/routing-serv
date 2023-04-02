@@ -51,8 +51,15 @@ def retRoute():
 
         # Load the graph
         G = ox.graph_from_place("HSR, Bengaluru, India", network_type='drive')
-        start_node = ox.distance.nearest_nodes(G, lat1, lon1)
-        goal_node = ox.distance.nearest_nodes(G, lat2, lon2)
+
+        source_coord = (12.909229431138986, 77.63947874679494)
+        dest_coord = (12.914080814688852, 77.64155496935096)
+
+        # start_node = ox.distance.nearest_nodes(G, lat1, lon1)
+        # goal_node = ox.distance.nearest_nodes(G, lat2, lon2)
+
+        start_node = ox.distance.nearest_nodes(G, source_coord[1], source_coord[0])
+        goal_node = ox.distance.nearest_nodes(G, dest_coord[1], dest_coord[0])
 
         astar = a_star(G)
 
