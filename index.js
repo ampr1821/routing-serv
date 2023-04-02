@@ -1,8 +1,11 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const spawn = require('child_process').spawn;
 
 const port = 5566;
+app.use(cors());
+
 app.listen(port,function() {
 	console.log('listening on port '+port);
 });
