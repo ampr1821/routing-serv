@@ -45,7 +45,7 @@ def retRoute():
     lat2 = float(args.get('lat2', None))
     lon1 = float(args.get('lon1', None))
     lon2 = float(args.get('lon2', None))
-    print(request.args)
+    print(str(lat1) + "," + str(lon1) + "," + str(lat2) + "," + str(lon2))
 
     if lat1 != None:
 
