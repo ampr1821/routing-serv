@@ -2,39 +2,32 @@ from flask import Flask, request
 from flask_cors import CORS, cross_origin
 import osmnx as ox
 from waitress import serve
-from astar import AStar
-from haversine import haversine
-# from astar_routing import *
+from astar_routing import *
+import pickle
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-class a_star(AStar):
-    def __init__(self,graph):
-        self.graph = graph
+# Load the graph
+try:
+    f = open('blr.bin', 'rb')
+    print('Graph found, loading from disk')
+    G = pickle.load(f)
+    f.close()
+except:
+    print('Graph does not exist, downloading from internet')
+    G = ox.graph_from_place("Bengaluru, India", network_type='drive')
+    f = open('blr.bin', 'wb')
+    pickle.dump(G, f)
+    f.close()
 
-    def heuristic_cost_estimate(self, n1, n2) -> float:
-        if isinstance(n1, int):
-            n1 = self.graph.nodes[n1]['x'], self.graph.nodes[n1]['y']
-        if isinstance(n2, int):
-            n2 = self.graph.nodes[n2]['x'], self.graph.nodes[n2]['y']
-        x1, y1 = n1
-        x2, y2 = n2
-        return haversine((y1, x1), (y2, x2))
-    
-    def distance_between(self, n1, n2):
-        if 'length' in self.graph[n1][n2]:
-            return self.graph[n1][n2]['length']
-        else:
-            return 99999999 # return a large number if 'length' attribute is not present
-    
-    def neighbors(self, node):
-        return list(self.graph.neighbors(node))
+astar = a_star(G)
 
 @app.route("/")
 @cross_origin()
 def test_connection():
+    print('Ping request received!')
     return "Yes, we are open!"
 
 @app.route("/getroute")
@@ -47,21 +40,13 @@ def retRoute():
     lon2 = float(args.get('lon2', None))
     print(str(lat1) + "," + str(lon1) + "," + str(lat2) + "," + str(lon2))
 
-    if lat1 != None:
+    if lat1 != None and lat2 != None and lon1 != None and lon2 != None:
 
-        # Load the graph
-        G = ox.graph_from_place("HSR, Bengaluru, India", network_type='drive')
+        start_node = ox.distance.nearest_nodes(G, lon1, lat1)
+        goal_node = ox.distance.nearest_nodes(G, lon2, lat2)
 
-        source_coord = (12.909229431138986, 77.63947874679494)
-        dest_coord = (12.914080814688852, 77.64155496935096)
-
-        # start_node = ox.distance.nearest_nodes(G, lat1, lon1)
-        # goal_node = ox.distance.nearest_nodes(G, lat2, lon2)
-
-        start_node = ox.distance.nearest_nodes(G, source_coord[1], source_coord[0])
-        goal_node = ox.distance.nearest_nodes(G, dest_coord[1], dest_coord[0])
-
-        astar = a_star(G)
+        # start_node = ox.distance.nearest_nodes(G, source_coord[1], source_coord[0])
+        # goal_node = ox.distance.nearest_nodes(G, dest_coord[1], dest_coord[0])
 
         path = astar.astar(start_node, goal_node)
         path = list(path)
