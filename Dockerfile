@@ -8,5 +8,6 @@ COPY *.py /app
 COPY requirements.txt /app
 
 RUN pip install -r requirements.txt
+RUN python3 download_graph.py
 
 ENTRYPOINT ["python", "flask_server.py"]
