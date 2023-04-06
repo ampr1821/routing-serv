@@ -1,7 +1,7 @@
 # geopy
 # networkx
 osmnx
-# scikit-learn
+scikit-learn
 # astar
 # haversine
 Flask
