@@ -1,9 +1,9 @@
-geopy
-networkx
+# geopy
+# networkx
 osmnx
-scikit-learn
-astar
-haversine
+# scikit-learn
+# astar
+# haversine
 Flask
 waitress
 flask-cors
