@@ -1,29 +1,75 @@
 import osmnx as ox
-import networkx as nx
-import sys
-from astar import AStar
-from haversine import haversine
+import math, heapq, sys
 
-class a_star(AStar):
-    def __init__(self,graph):
+class a_star:
+    def __init__(self, graph):
         self.graph = graph
 
-    def heuristic_cost_estimate(self, n1, n2) -> float:
+    def get_route(self, pair1, pair2):
+        self.start_node = ox.distance.nearest_nodes(self.graph, pair1[1], pair1[0])
+        self.goal_node = ox.distance.nearest_nodes(self.graph, pair2[1], pair2[0])
+        
+        return self.__calculate_route()
+
+    def __calculate_route(self):
+        # Create a priority queue and add the start node with a cost of 0
+        pq = [(0, self.start_node)]
+        # Create a dictionary to keep track of the cost to reach each node
+        cost_so_far = {self.start_node: 0}
+        # Create a dictionary to keep track of the parent of each node
+        parent = {self.start_node: None}
+        
+        while pq:
+            # Pop the node with the lowest cost from the priority queue
+            _, current_node = heapq.heappop(pq)
+            
+            # If we have reached the goal, reconstruct the path and return it
+            if current_node == self.goal_node:
+                path = []
+                while current_node:
+                    path.append(current_node)
+                    current_node = parent[current_node]
+                return path[::-1]
+            
+            # Otherwise, expand the current node's neighbors and add them to the priority queue
+            for neighbor_node in self.__neighbors(current_node):
+                # Calculate the cost to reach the neighbor node
+                new_cost = cost_so_far[current_node] + 1
+                # If we haven't visited this neighbor node yet or the new cost is lower than the old cost, update the cost and parent
+                if neighbor_node not in cost_so_far or new_cost < cost_so_far[neighbor_node]:
+                    cost_so_far[neighbor_node] = new_cost
+                    priority = new_cost + self.__heuristic_cost_estimate(neighbor_node, self.goal_node)
+                    heapq.heappush(pq, (priority, neighbor_node))
+                    parent[neighbor_node] = current_node
+        
+        # If we get here, there is no path from the start node to the goal node
+        return None
+    def __haversine(self, pair1, pair2):
+        """
+        Calculate the great circle distance between two points
+        on the earth (specified in decimal degrees)
+        """
+        # convert decimal degrees to radians
+        lon1, lat1, lon2, lat2 = map(math.radians, [pair1[1], pair1[0], pair2[1], pair2[0]])
+
+        # haversine formula
+        dlon = lon2 - lon1
+        dlat = lat2 - lat1
+        a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+        c = 2 * math.asin(math.sqrt(a))
+        r = 6371 # Radius of earth in kilometers. Use 3956 for miles
+        return c * r
+    
+    def __heuristic_cost_estimate(self, n1, n2) -> float:
         if isinstance(n1, int):
             n1 = self.graph.nodes[n1]['x'], self.graph.nodes[n1]['y']
         if isinstance(n2, int):
             n2 = self.graph.nodes[n2]['x'], self.graph.nodes[n2]['y']
         x1, y1 = n1
         x2, y2 = n2
-        return haversine((y1, x1), (y2, x2))
+        return self.__haversine((y1, x1), (y2, x2))
 
-    def distance_between(self, n1, n2):
-        if 'length' in self.graph[n1][n2]:
-            return self.graph[n1][n2]['length']
-        else:
-            return 99999999 # return a large number if 'length' attribute is not present
-
-    def neighbors(self, node):
+    def __neighbors(self, node):
         return list(self.graph.neighbors(node))
 
 if __name__ == "__main__":

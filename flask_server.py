@@ -42,13 +42,7 @@ def retRoute():
 
     if lat1 != None and lat2 != None and lon1 != None and lon2 != None:
 
-        start_node = ox.distance.nearest_nodes(G, lon1, lat1)
-        goal_node = ox.distance.nearest_nodes(G, lon2, lat2)
-
-        # start_node = ox.distance.nearest_nodes(G, source_coord[1], source_coord[0])
-        # goal_node = ox.distance.nearest_nodes(G, dest_coord[1], dest_coord[0])
-
-        path = astar.astar(start_node, goal_node)
+        path = astar.get_route((lat1, lon1), (lat2, lon2))
         path = list(path)
         returnList = []
 
