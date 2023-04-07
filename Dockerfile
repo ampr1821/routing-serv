@@ -10,4 +10,4 @@ COPY requirements.txt /app
 RUN pip install -r requirements.txt
 RUN python3 download_graph.py
 
-ENTRYPOINT ["python", "flask_server.py"]
+ENTRYPOINT ["python3", "-u", "flask_server.py"]
