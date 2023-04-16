@@ -47,12 +47,26 @@ def retRoute():
         returnList = []
 
         print(len(path))
+        # print(path)
 
-        for i in path:
-            lon = G._node[i]['x'] #lon
-            lat = G._node[i]['y'] #lat
+        for i in range(len(path) -1):
+            edge_data = G.get_edge_data(path[i], path[i + 1])
+            lon = G.nodes[path[i]]['x'] #lon
+            lat = G.nodes[path[i]]['y'] #lat
             returnList.append([lat, lon])
-            # print(str(lat) + "," + str(lon))
+            
+            if 'geometry' in edge_data[0].keys():
+                print('yes')
+                for j in edge_data[0]['geometry'].wkt[12:-1].split(','):
+                    t = j.split()
+                    lon = t[0] #lon
+                    lat = t[1] #lat
+                    print(t)
+                    returnList.append([lat, lon])
+            
+            lon = G.nodes[path[i + 1]]['x'] #lon
+            lat = G.nodes[path[i + 1]]['y'] #lat
+            returnList.append([lat, lon])
         
         return returnList
     else:
